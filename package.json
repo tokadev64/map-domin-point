@@ -1,0 +1,31 @@
+{
+  "name": "domin-point-map",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "packageManager": "npm@11.4.2",
+  "scripts": {
+    "dev": "vp dev",
+    "build": "vp build",
+    "check": "vp check",
+    "test": "vp test --run",
+    "generate:data": "deno run --allow-read --allow-write scripts/generate-stores.ts",
+    "geocode": "deno task geocode",
+    "export:points": "deno task export:points"
+  },
+  "dependencies": {
+    "maplibre-gl": "^5.6.1",
+    "vue": "^3.5.17"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.0",
+    "@voidzero-dev/vite-plus-core": "latest",
+    "fast-check": "^4.2.0",
+    "vite-plus": "latest",
+    "vitest": "4.1.9"
+  },
+  "overrides": {
+    "vite": "npm:@voidzero-dev/vite-plus-core@latest",
+    "vitest": "4.1.9"
+  }
+}

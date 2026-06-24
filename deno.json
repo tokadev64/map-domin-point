@@ -1,0 +1,12 @@
+{
+  "nodeModulesDir": "auto",
+  "tasks": {
+    "dev": "deno run -A scripts/run-vite.ts",
+    "build": "deno run -A scripts/run-vite.ts build",
+    "check": "deno run -A npm:vite-plus/vp check",
+    "test": "deno run -A scripts/run-vitest.ts --run --pool=threads",
+    "generate:data": "deno run --allow-read --allow-write scripts/generate-stores.ts",
+    "geocode": "deno run --allow-read --allow-write --allow-net=msearch.gsi.go.jp scripts/geocode-stores.ts",
+    "export:points": "deno run --allow-read --allow-write scripts/export-store-points.ts"
+  }
+}
