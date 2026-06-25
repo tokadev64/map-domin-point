@@ -767,7 +767,7 @@ p {
 }
 
 .store-card__primary {
-  grid-template-columns: auto minmax(5rem, auto) minmax(0, 1fr);
+  grid-template-columns: auto minmax(0, 6.5rem) minmax(8rem, 1fr);
 }
 
 .store-card__secondary {
