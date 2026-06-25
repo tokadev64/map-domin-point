@@ -7,7 +7,6 @@ import maplibregl, {
 } from "maplibre-gl";
 import { onBeforeUnmount, onMounted, ref, watch } from "vue";
 import {
-  APP_LOCALE,
   MAP_CONFIG,
   MAP_CONTROL_POSITIONS,
   MAP_LAYER_IDS,
@@ -24,8 +23,6 @@ import type { StorePointFeatureCollection } from "../geocoding/types";
 const {
   clearSelectedStore,
   dataset,
-  locateSelectedStore,
-  locating,
   query,
   region,
   selectStoreAtCoordinates,
@@ -36,7 +33,6 @@ const {
 } = useStoreMapContext();
 
 const mapElement = ref<HTMLElement | null>(null);
-const pointCount = ref(0);
 let map: MapLibreMap | null = null;
 let storeMarker: Marker | null = null;
 let refreshTimer: ReturnType<typeof setInterval> | undefined;
@@ -76,7 +72,6 @@ function updateVisibleStorePoints(): void {
     selectedCategories.value,
     query.value,
   );
-  pointCount.value = visibleCollection.features.length;
   const source = map?.getSource(
     MAP_LAYER_IDS.storeSource,
   ) as GeoJSONSource | undefined;
@@ -347,35 +342,5 @@ onBeforeUnmount(() => {
   <section class="map-shell" aria-labelledby="map-heading">
     <h2 id="map-heading" class="visually-hidden">店舗地図</h2>
     <div ref="mapElement" class="map"></div>
-    <aside
-      v-if="selectedStore"
-      class="map-callout"
-      aria-labelledby="selected-store-name"
-    >
-      <button
-        type="button"
-        class="map-callout__close"
-        @click="clearSelectedStore"
-      >
-        <span aria-hidden="true">×</span>
-        <span class="visually-hidden">店舗情報を閉じる</span>
-      </button>
-      <span class="eyebrow">選択中</span>
-      <strong id="selected-store-name">{{ selectedStore.name }}</strong>
-      <span>{{ selectedStore.category }}</span>
-      <span>{{ selectedStore.address }}</span>
-      <button
-        v-if="!selectedCoordinates"
-        type="button"
-        class="map-callout__locate"
-        :aria-disabled="locating"
-        @click="locateSelectedStore"
-      >
-        {{ locating ? "住所を確認中…" : "この店舗を地図に表示" }}
-      </button>
-    </aside>
-    <div v-else-if="!selectedStore" class="map-hint">
-      座標取得済み {{ pointCount.toLocaleString(APP_LOCALE) }} 店舗を表示中
-    </div>
   </section>
 </template>
