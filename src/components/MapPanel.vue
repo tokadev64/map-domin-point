@@ -7,7 +7,6 @@ import maplibregl, {
 } from "maplibre-gl";
 import { onBeforeUnmount, onMounted, ref, watch } from "vue";
 import {
-  APP_LOCALE,
   MAP_CONFIG,
   MAP_CONTROL_POSITIONS,
   MAP_LAYER_IDS,
@@ -36,7 +35,6 @@ const {
 } = useStoreMapContext();
 
 const mapElement = ref<HTMLElement | null>(null);
-const pointCount = ref(0);
 let map: MapLibreMap | null = null;
 let storeMarker: Marker | null = null;
 let refreshTimer: ReturnType<typeof setInterval> | undefined;
@@ -76,7 +74,6 @@ function updateVisibleStorePoints(): void {
     selectedCategories.value,
     query.value,
   );
-  pointCount.value = visibleCollection.features.length;
   const source = map?.getSource(
     MAP_LAYER_IDS.storeSource,
   ) as GeoJSONSource | undefined;
@@ -374,8 +371,5 @@ onBeforeUnmount(() => {
         {{ locating ? "住所を確認中…" : "この店舗を地図に表示" }}
       </button>
     </aside>
-    <div v-else-if="!selectedStore" class="map-hint">
-      座標取得済み {{ pointCount.toLocaleString(APP_LOCALE) }} 店舗を表示中
-    </div>
   </section>
 </template>

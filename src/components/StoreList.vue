@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { categoryColor } from "../category-color";
-import { APP_LOCALE, PAGE_SIZE } from "../constants";
+import { APP_LOCALE } from "../constants";
 import { useStoreMapContext } from "../composables/store-map-context";
 
 const {
@@ -27,6 +27,18 @@ const hasActiveFilters = computed(() =>
 
 function showStoreOnMap(store: Parameters<typeof selectStore>[0]): void {
   selectStore(store);
+}
+
+function preloadMore(event: Event): void {
+  const grid = event.currentTarget as HTMLUListElement;
+  const remainingScroll =
+    grid.scrollHeight - grid.scrollTop - grid.clientHeight;
+  if (
+    remainingScroll <= 600 &&
+    visibleCount.value < drawerFilteredStores.value.length
+  ) {
+    loadMore();
+  }
 }
 </script>
 
@@ -65,7 +77,11 @@ function showStoreOnMap(store: Parameters<typeof selectStore>[0]): void {
       </span>
     </div>
 
-    <ul class="store-grid" role="list">
+    <ul
+      class="store-grid"
+      role="list"
+      @scroll.passive="preloadMore"
+    >
       <li v-for="store in visibleStores" :key="store.id">
         <article
           class="store-card"
@@ -103,15 +119,5 @@ function showStoreOnMap(store: Parameters<typeof selectStore>[0]): void {
     <p v-if="!loading && drawerFilteredStores.length === 0" class="empty-state">
       条件に一致する店舗がありません。検索条件を変更してください。
     </p>
-    <button
-      v-if="visibleCount < drawerFilteredStores.length"
-      type="button"
-      class="load-more"
-      @click="loadMore"
-    >
-      さらに{{
-        Math.min(PAGE_SIZE, drawerFilteredStores.length - visibleCount)
-      }}件を表示
-    </button>
   </section>
 </template>
