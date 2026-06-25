@@ -113,6 +113,7 @@ onBeforeUnmount(() => {
       @toggle="syncCategoryMenu"
     >
       <summary :id="FORM_IDS.category">
+        <span class="category-control__label">業種</span>
         <span class="category-control__summary">
           {{ selectedCategorySummary }}
         </span>
@@ -160,6 +161,5 @@ onBeforeUnmount(() => {
         </div>
       </fieldset>
     </details>
-
   </form>
 </template>

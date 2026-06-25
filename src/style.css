@@ -570,12 +570,11 @@ p {
   content: "";
 }
 
-.map-callout,
-.map-hint {
+.map-callout {
   position: absolute;
   z-index: 2;
+  top: 24px;
   right: 24px;
-  bottom: 28px;
   max-width: min(360px, calc(100% - 48px));
   padding: 20px;
   border: 1px solid rgba(255, 255, 255, 0.4);
@@ -587,7 +586,6 @@ p {
 }
 
 .map-callout {
-  position: absolute;
   display: grid;
   gap: 8px;
   padding-top: 2.75rem;
@@ -644,11 +642,6 @@ p {
 
 .map-callout__close:hover {
   background: rgba(255, 255, 255, 0.12);
-}
-
-.map-hint {
-  color: #deebe8;
-  font-size: 0.8125rem;
 }
 
 .store-marker {
@@ -970,6 +963,12 @@ p {
   .store-drawer-toggle {
     top: 0.75rem;
     padding-inline: 0.6rem;
+  }
+
+  .map-callout {
+    top: 4.25rem;
+    right: 0.75rem;
+    max-width: calc(100% - 1.5rem);
   }
 }
 
