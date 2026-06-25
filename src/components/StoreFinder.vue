@@ -13,7 +13,6 @@ const storeDrawerOpen = ref(false);
 <template>
   <section class="finder" aria-labelledby="finder-heading">
     <h2 id="finder-heading" class="visually-hidden">店舗を検索</h2>
-    <StoreSearchForm />
     <div
       class="map-workspace"
       :class="{ 'store-drawer-open': storeDrawerOpen }"
@@ -27,7 +26,7 @@ const storeDrawerOpen = ref(false);
         @click="storeDrawerOpen = !storeDrawerOpen"
       >
         <span aria-hidden="true">{{ storeDrawerOpen ? "‹" : "›" }}</span>
-        店舗一覧
+        検索・店舗一覧
         <strong>
           {{ drawerFilteredStores.length.toLocaleString(APP_LOCALE) }}
         </strong>
@@ -39,6 +38,7 @@ const storeDrawerOpen = ref(false);
         :aria-hidden="!storeDrawerOpen"
         :inert="!storeDrawerOpen"
       >
+        <StoreSearchForm />
         <StoreList />
       </aside>
     </div>
