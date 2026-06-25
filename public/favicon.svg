@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="56" height="56" x="4" y="2" rx="14" fill="#f16b3a" />
+  <path
+    fill="#113f3b"
+    d="M18 60h30c7 0 12-5 12-12v-2c-2 8-7 12-15 12H18Z"
+  />
+  <text
+    x="32"
+    y="43"
+    fill="#fff"
+    font-family="'Noto Sans JP', sans-serif"
+    font-size="35"
+    font-weight="800"
+    text-anchor="middle"
+  >ど</text>
+</svg>
