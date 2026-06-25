@@ -1,10 +1,16 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 import { categoryColor } from "../category-color";
 import { APP_LOCALE } from "../constants";
 import { useStoreMapContext } from "../composables/store-map-context";
+import StoreCard from "./StoreCard.vue";
+
+const emit = defineEmits<{
+  storeSelected: [];
+}>();
 
 const {
+  clearSelectedStore,
   drawerFilteredStores,
   loadMore,
   loading,
@@ -24,9 +30,11 @@ const hasActiveFilters = computed(() =>
   region.value !== "" ||
   selectedCategories.value.length > 0
 );
+const storeGrid = ref<HTMLUListElement | null>(null);
 
 function showStoreOnMap(store: Parameters<typeof selectStore>[0]): void {
   selectStore(store);
+  emit("storeSelected");
 }
 
 function preloadMore(event: Event): void {
@@ -40,6 +48,14 @@ function preloadMore(event: Event): void {
     loadMore();
   }
 }
+
+watch(selectedStore, async (store) => {
+  if (!store) return;
+  await nextTick();
+  storeGrid.value
+    ?.querySelector<HTMLElement>(`[data-store-id="${CSS.escape(store.id)}"]`)
+    ?.scrollIntoView({ block: "nearest" });
+});
 </script>
 
 <template>
@@ -78,41 +94,22 @@ function preloadMore(event: Event): void {
     </div>
 
     <ul
+      ref="storeGrid"
       class="store-grid"
       role="list"
       @scroll.passive="preloadMore"
     >
-      <li v-for="store in visibleStores" :key="store.id">
-        <article
-          class="store-card"
-          :class="{ selected: selectedStore?.id === store.id }"
-        >
-          <div class="store-card__primary">
-            <span class="region-tag">
-              {{ store.region }}
-            </span>
-            <span
-              class="store-card__category"
-              :style="{ '--category-color': categoryColor(store.category) }"
-            >
-              {{ store.category }}
-            </span>
-            <h3>{{ store.name }}</h3>
-          </div>
-          <div class="store-card__secondary">
-            <address>{{ store.address }}</address>
-            <button
-              type="button"
-              class="store-card__map-button"
-              :aria-pressed="selectedStore?.id === store.id"
-              @click="showStoreOnMap(store)"
-            >
-              <span aria-hidden="true">●</span>
-              地図
-              <span class="visually-hidden">：{{ store.name }}</span>
-            </button>
-          </div>
-        </article>
+      <li
+        v-for="store in visibleStores"
+        :key="store.id"
+        :data-store-id="store.id"
+      >
+        <StoreCard
+          :store="store"
+          :selected="selectedStore?.id === store.id"
+          @clear="clearSelectedStore"
+          @select="showStoreOnMap"
+        />
       </li>
     </ul>
 

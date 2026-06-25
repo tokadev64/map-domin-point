@@ -23,8 +23,6 @@ import type { StorePointFeatureCollection } from "../geocoding/types";
 const {
   clearSelectedStore,
   dataset,
-  locateSelectedStore,
-  locating,
   query,
   region,
   selectStoreAtCoordinates,
@@ -344,32 +342,5 @@ onBeforeUnmount(() => {
   <section class="map-shell" aria-labelledby="map-heading">
     <h2 id="map-heading" class="visually-hidden">店舗地図</h2>
     <div ref="mapElement" class="map"></div>
-    <aside
-      v-if="selectedStore"
-      class="map-callout"
-      aria-labelledby="selected-store-name"
-    >
-      <button
-        type="button"
-        class="map-callout__close"
-        @click="clearSelectedStore"
-      >
-        <span aria-hidden="true">×</span>
-        <span class="visually-hidden">店舗情報を閉じる</span>
-      </button>
-      <span class="eyebrow">選択中</span>
-      <strong id="selected-store-name">{{ selectedStore.name }}</strong>
-      <span>{{ selectedStore.category }}</span>
-      <span>{{ selectedStore.address }}</span>
-      <button
-        v-if="!selectedCoordinates"
-        type="button"
-        class="map-callout__locate"
-        :aria-disabled="locating"
-        @click="locateSelectedStore"
-      >
-        {{ locating ? "住所を確認中…" : "この店舗を地図に表示" }}
-      </button>
-    </aside>
   </section>
 </template>
