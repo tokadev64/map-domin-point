@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { APP_LOCALE } from "../constants";
 import { useStoreMapContext } from "../composables/store-map-context";
 import MapPanel from "./MapPanel.vue";
@@ -47,6 +47,15 @@ function advanceSheet(): void {
 function showSelectedStore(): void {
   if (isMobile.value) sheetStage.value = "half";
 }
+
+watch(selectedStore, (store) => {
+  if (!store) return;
+  if (isMobile.value) {
+    sheetStage.value = "half";
+    return;
+  }
+  storeDrawerOpen.value = true;
+});
 
 onMounted(() => {
   mobileMediaQuery = globalThis.matchMedia("(max-width: 640px)");

@@ -26,6 +26,7 @@ const emit = defineEmits<{
       <span
         class="store-card__category"
         :style="{ '--category-color': categoryColor(store.category) }"
+        :title="store.category"
       >
         {{ store.category }}
       </span>
