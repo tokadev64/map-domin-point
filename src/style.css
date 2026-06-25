@@ -582,13 +582,13 @@ p {
 }
 
 .store-marker {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border: 4px solid white;
   border-radius: 50% 50% 50% 0;
   transform: rotate(-45deg);
   background: var(--marker-color);
-  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.32);
+  box-shadow: 0 0 0 4px var(--orange), 0 6px 16px rgba(0, 0, 0, 0.38);
 }
 
 .region-marker {
@@ -607,10 +607,11 @@ p {
 
 .store-marker::after {
   position: absolute;
-  top: 7px;
-  left: 7px;
-  width: 6px;
-  height: 6px;
+  top: 8px;
+  left: 8px;
+  width: 8px;
+  height: 8px;
+  border: 2px solid var(--marker-color);
   border-radius: 50%;
   background: white;
   content: "";
@@ -766,7 +767,7 @@ p {
 }
 
 .store-card__primary {
-  grid-template-columns: auto minmax(5rem, auto) minmax(0, 1fr);
+  grid-template-columns: auto minmax(0, 6.5rem) minmax(8rem, 1fr);
 }
 
 .store-card__secondary {

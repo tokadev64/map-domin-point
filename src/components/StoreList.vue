@@ -51,6 +51,11 @@ function preloadMore(event: Event): void {
 
 watch(selectedStore, async (store) => {
   if (!store) return;
+  const selectedIndex = drawerFilteredStores.value.findIndex((candidate) =>
+    candidate.id === store.id
+  );
+  if (selectedIndex < 0) return;
+  visibleCount.value = Math.max(visibleCount.value, selectedIndex + 1);
   await nextTick();
   storeGrid.value
     ?.querySelector<HTMLElement>(`[data-store-id="${CSS.escape(store.id)}"]`)
