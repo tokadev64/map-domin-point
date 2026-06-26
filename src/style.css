@@ -901,7 +901,7 @@ p {
 
   .finder {
     height: calc(100vh - 2.875rem);
-    height: calc(100dvh - 2.875rem);
+    height: calc(100lvh - 2.875rem);
     min-height: 0;
     grid-template-rows: minmax(0, 1fr);
   }
