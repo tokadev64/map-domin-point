@@ -30,6 +30,7 @@ export const MAP_CONFIG = {
   initialZoom: 5.25,
   selectedStoreZoom: 15.5,
   selectedStoreAnimationDurationMs: 800,
+  selectedStoreEdgePadding: 16,
   regionFitAnimationDurationMs: 800,
   regionFitPadding: 48,
   regionFitMaximumZoom: 10,

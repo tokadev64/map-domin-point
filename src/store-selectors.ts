@@ -20,6 +20,24 @@ export function selectFilteredStores(
   return stores.filter((store) => matchesStore(store, filters));
 }
 
+export function prioritizeSelectedStore(
+  stores: readonly Store[],
+  selectedStoreId: string | undefined,
+): Store[] {
+  if (selectedStoreId === undefined) return [...stores];
+
+  const selectedIndex = stores.findIndex((store) =>
+    store.id === selectedStoreId
+  );
+  if (selectedIndex <= 0) return [...stores];
+
+  return [
+    stores[selectedIndex],
+    ...stores.slice(0, selectedIndex),
+    ...stores.slice(selectedIndex + 1),
+  ];
+}
+
 export function selectRegionCounts(
   stores: readonly Store[],
 ): Record<Region, number> {
