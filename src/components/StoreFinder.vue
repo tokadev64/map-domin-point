@@ -75,7 +75,10 @@ onBeforeUnmount(() => {
       class="map-workspace"
       :class="{ 'store-drawer-open': storeDrawerOpen }"
     >
-      <MapPanel />
+      <MapPanel
+        :drawer-open="storeDrawerOpen"
+        :sheet-stage="sheetStage"
+      />
       <button
         type="button"
         class="store-drawer-toggle"

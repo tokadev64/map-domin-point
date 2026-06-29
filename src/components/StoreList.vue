@@ -57,9 +57,7 @@ watch(selectedStore, async (store) => {
   if (selectedIndex < 0) return;
   visibleCount.value = Math.max(visibleCount.value, selectedIndex + 1);
   await nextTick();
-  storeGrid.value
-    ?.querySelector<HTMLElement>(`[data-store-id="${CSS.escape(store.id)}"]`)
-    ?.scrollIntoView({ block: "nearest" });
+  if (storeGrid.value) storeGrid.value.scrollTop = 0;
 });
 </script>
 
