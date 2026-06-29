@@ -2,6 +2,7 @@ import fc from "fast-check";
 import { describe, expect, it } from "vitest";
 import { APP_LOCALE, OTHER_CATEGORY_PREFIX } from "./constants";
 import {
+  prioritizeSelectedStore,
   selectCategories,
   selectFilteredStores,
   selectRegionCounts,
@@ -26,6 +27,39 @@ const filtersArbitrary: fc.Arbitrary<StoreFilters> = fc.record({
 });
 
 describe("store selector properties", () => {
+  it("places the selected store first without changing the other stores' order", () => {
+    fc.assert(
+      fc.property(
+        fc.uniqueArray(storeArbitrary, {
+          minLength: 1,
+          selector: (store) => store.id,
+        }),
+        fc.nat(),
+        (stores, indexSeed) => {
+          const selectedIndex = indexSeed % stores.length;
+          const selected = stores[selectedIndex];
+          const prioritized = prioritizeSelectedStore(stores, selected.id);
+
+          expect(prioritized[0]).toBe(selected);
+          expect(prioritized.slice(1)).toEqual(
+            stores.filter((store) => store.id !== selected.id),
+          );
+        },
+      ),
+    );
+  });
+
+  it("preserves the store order when there is no matching selection", () => {
+    fc.assert(
+      fc.property(fc.array(storeArbitrary), (stores) => {
+        expect(prioritizeSelectedStore(stores, undefined)).toEqual(stores);
+        expect(prioritizeSelectedStore(stores, "missing-store-id")).toEqual(
+          stores,
+        );
+      }),
+    );
+  });
+
   it("filtered stores are an ordered subset and all satisfy the filters", () => {
     fc.assert(
       fc.property(

@@ -19,6 +19,12 @@ import { categoryColor } from "../category-color";
 import { useStoreMapContext } from "../composables/store-map-context";
 import { filterStorePointCollection } from "../geocoding/store-points";
 import type { StorePointFeatureCollection } from "../geocoding/types";
+import { calculateMapPadding, type Rectangle } from "../map-occlusion";
+
+const props = defineProps<{
+  drawerOpen: boolean;
+  sheetStage: "closed" | "half" | "full";
+}>();
 
 const {
   clearSelectedStore,
@@ -50,6 +56,43 @@ function prefersReducedMotion(): boolean {
 function removeStoreMarker(): void {
   storeMarker?.remove();
   storeMarker = null;
+}
+
+function measureTargetDrawer(): Rectangle | undefined {
+  const workspace = mapElement.value?.closest<HTMLElement>(".map-workspace");
+  const drawer = workspace?.querySelector<HTMLElement>(".store-drawer");
+  if (!workspace || !drawer) return undefined;
+
+  const isBottomSheet = globalThis.matchMedia("(max-width: 640px)").matches;
+  if (!isBottomSheet && !props.drawerOpen) return undefined;
+
+  const measurement = drawer.cloneNode(false) as HTMLElement;
+  measurement.removeAttribute("id");
+  measurement.setAttribute("aria-hidden", "true");
+  Object.assign(measurement.style, {
+    pointerEvents: "none",
+    transform: "none",
+    transition: "none",
+    visibility: "hidden",
+  });
+  workspace.append(measurement);
+  const bounds = measurement.getBoundingClientRect();
+  measurement.remove();
+  return bounds;
+}
+
+function selectedStorePadding(): ReturnType<typeof calculateMapPadding> {
+  const mapBounds = mapElement.value?.getBoundingClientRect();
+  if (!mapBounds) {
+    const padding = MAP_CONFIG.selectedStoreEdgePadding;
+    return { top: padding, right: padding, bottom: padding, left: padding };
+  }
+  const drawerBounds = measureTargetDrawer();
+  return calculateMapPadding(
+    mapBounds,
+    drawerBounds ? [drawerBounds] : [],
+    MAP_CONFIG.selectedStoreEdgePadding,
+  );
 }
 
 function updateViewportStoreIds(): void {
@@ -288,18 +331,38 @@ watch(selectedCoordinates, (coordinates) => {
   storeMarker = new maplibregl.Marker({ element })
     .setLngLat([coordinates.longitude, coordinates.latitude])
     .addTo(currentMap);
-  const cameraOptions: maplibregl.EaseToOptions = {
-    center: [coordinates.longitude, coordinates.latitude],
-    duration: prefersReducedMotion()
-      ? 0
-      : MAP_CONFIG.selectedStoreAnimationDurationMs,
-  };
-  if (!preserveZoomOnNextSelection) {
-    cameraOptions.zoom = MAP_CONFIG.selectedStoreZoom;
-  }
-  preserveZoomOnNextSelection = false;
-  currentMap.easeTo(cameraOptions);
 });
+
+watch(
+  [
+    selectedCoordinates,
+    () => props.drawerOpen,
+    () => props.sheetStage,
+  ],
+  ([coordinates], [previousCoordinates]) => {
+    const currentMap = map;
+    if (!currentMap || !coordinates) {
+      preserveZoomOnNextSelection = false;
+      return;
+    }
+
+    const coordinatesChanged = coordinates !== previousCoordinates;
+    const cameraOptions: maplibregl.EaseToOptions = {
+      center: [coordinates.longitude, coordinates.latitude],
+      duration: prefersReducedMotion()
+        ? 0
+        : MAP_CONFIG.selectedStoreAnimationDurationMs,
+      padding: selectedStorePadding(),
+      retainPadding: false,
+    };
+    if (coordinatesChanged && !preserveZoomOnNextSelection) {
+      cameraOptions.zoom = MAP_CONFIG.selectedStoreZoom;
+    }
+    if (coordinatesChanged) preserveZoomOnNextSelection = false;
+    currentMap.easeTo(cameraOptions);
+  },
+  { flush: "post" },
+);
 
 watch(selectedStore, (store) => {
   if (!store || selectedCoordinates.value) return;

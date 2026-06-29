@@ -18,6 +18,7 @@ import {
 } from "../services/coordinate-cache";
 import { fetchCoordinates, fetchStoreDataset } from "../services/store-api";
 import {
+  prioritizeSelectedStore,
   selectCategories,
   selectFilteredStores,
   selectRegionCounts,
@@ -91,9 +92,14 @@ export function createStoreMapState(): StoreMapState {
   );
 
   const drawerFilteredStores = computed(() => {
-    if (!viewportOnly.value) return filteredStores.value;
-    return filteredStores.value.filter((store) =>
-      viewportStoreIds.value.has(store.id)
+    const stores = viewportOnly.value
+      ? filteredStores.value.filter((store) =>
+        viewportStoreIds.value.has(store.id)
+      )
+      : filteredStores.value;
+    return prioritizeSelectedStore(
+      stores,
+      selectedStore.value?.id,
     );
   });
 
